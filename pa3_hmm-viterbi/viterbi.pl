@@ -1,5 +1,6 @@
+:- ['tau.pl'].
+:- ['count_f.pl'].
 :- ['sigmas.pl'].
-:- ['taus.pl'].
 
 % Compute all possible "solution(Probability,TagList)" for a given WordList
 % ===================================================
@@ -16,10 +17,10 @@ sequences([],PSs,PSs).
 % ===================================================
 sequences([Word|Words],PSs0,PSs) :-
      findall(PS2,
-                   (tau(Word,T2,Prob1),
+     	((tau(cnt1, Word,T2)), (count(n, T2)), Prob1 is cnt1/n,
                     findall(solution(Prob,[T2,T1|Ts]),
                                   (member(solution(Prob3,[T1|Ts]),PSs0),
-                                     sigma(T1,T2,Prob2),
+                                        sigma(cnt2,T1,T2), (count(na, T1)), Prob2 is cnt2/na,
                                      Prob is Prob1*Prob2*Prob3),
                                PSs),
                     max_key(PSs,PS2)),
