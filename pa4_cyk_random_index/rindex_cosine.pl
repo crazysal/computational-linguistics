@@ -29,6 +29,10 @@ l2_norm([A|As], B1, C):-
   l2_norm(As, B, C).
 
 
+most_similar(A,Output):-
+  findall(template(Word,Simi),(wordvec(Word,_),similarity(A,Word,Simi),not(A=Word)),Out), sort(2, @>, Out, SortOut), member(template(Output,_),SortOut).
+
+
 
 
     
