@@ -11,7 +11,26 @@ similarity(X,Y,Z):-
 
 % The cosine distance
 %
-% cosine(X,Y,Z):-
+cosine(X,Y,Z):-
+  dot_prod(X,Y, 0, DZ),
+  l2_norm(X, 0,  Xl2),
+  l2_norm(Y, 0, Yl2),
+  Z is (DZ / (sqrt(Xl2)*sqrt(Yl2))).
+
+dot_prod([], [], RS, RS).
+
+dot_prod([P|Ps], [Q|Qs], S1, RS):-
+  S is P*Q + S1,
+  dot_prod(Ps, Qs, S, RS).
+
+l2_norm([], B, B).
+l2_norm([A|As], B1, C):-
+  B is A*A + B1,
+  l2_norm(As, B, C).
+
+
+
+
     
 
 
