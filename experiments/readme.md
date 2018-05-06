@@ -6,3 +6,9 @@
 All of these are defined in terms of ‘!’, ‘true’ and/or ‘fail’.
 
 > 'While' cycles  with `repeat/0`
+
+> Finding all solutions to a predicate: `findall/3`
+
+> `bagof/3` (more structured replies)
+
+> `setof/3` (structured with no repeats )
