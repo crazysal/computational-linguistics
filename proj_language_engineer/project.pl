@@ -74,6 +74,7 @@ lemma(each,dtforall).
 lemma(all,dtforall).
 lemma(every,dtforall).
 lemma(box,n).
+lemma(boxes,n).
 lemma(tom,pn).
 lemma(mia,pn).
 lemma(red,adj).
@@ -84,7 +85,7 @@ lemma(in,p).
 lemma(under,p).
 lemma(on,vacp).   
 lemma(to,vacp).
-
+ 
  
 % --------------------------------------------------------------------
 % Constructing lexical items:
@@ -98,6 +99,11 @@ lex(n(X^P),Lemma):-
 
 lex(dt((X^P)^(X^Q)^forall(X,imp(P,Q))),Word):-
 		lemma(Word,dtforall).
+ 
+lex(tv(X^Y^P,[]),Word):-
+	lemma(Word,tv),
+	P =.. [Word,X,Y].
+ 
 				
 % ...
 
