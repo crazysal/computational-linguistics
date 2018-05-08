@@ -68,23 +68,52 @@ process([bye|_]):-
 % Lemmas are uninflected, except for irregular inflection
 % lemma(+Lemma,+Category)
 % --------------------------------------------------------------------
+
+%% ...
 lemma(a,dtexists).
 lemma(an,dtexists).
+lemma(some,dtexists).
+%% 
 lemma(each,dtforall).
 lemma(all,dtforall).
 lemma(every,dtforall).
+%% 
+lemma(the,dtthe).
+%% 
 lemma(box,n).
-lemma(boxes,n).
+lemma(bus,n).
+lemma(weapon,n).
+lemma(passenger,n).
+lemma(man,n).
+%% 
 lemma(tom,pn).
 lemma(mia,pn).
+lemma(sue,pn).
+lemma(rui,pn).
+lemma(sal,pn).
+%% 
 lemma(red,adj).
+lemma(yellow,adj).
+lemma(old,adj).
+lemma(illegal,adj).
+lemma(big,adj).
+%% 
 lemma(is,be).
 lemma(was,be).
+%% 
 lemma(eat,tv).
+lemma(saw,tv).
+lemma(had,tv).
+%% 
 lemma(in,p).
 lemma(under,p).
+%% 
 lemma(on,vacp).   
 lemma(to,vacp).
+%% 
+lemma(sneeze,iv).
+
+
  
  
 % --------------------------------------------------------------------
@@ -92,19 +121,54 @@ lemma(to,vacp).
 % word = lemma + suffix (for "suffix" of size 0 or bigger)
 % --------------------------------------------------------------------
 
-
+%% lex(n(X^bus(X)),bus).
 lex(n(X^P),Lemma):-
 	lemma(Lemma,n),
 	P=.. [Lemma,X].
 
+
+%% lex(pn((sue^X)^X),sue).
+lex(pn((Lemma^X)^X), Lemma):-
+	lemma(Lemma,pn).
+
+
+
+%% lex(dt((X^P)^(X^Q)^forall(X,(imp(P,Q)))),each).
 lex(dt((X^P)^(X^Q)^forall(X,imp(P,Q))),Word):-
 		lemma(Word,dtforall).
  
-lex(tv(X^Y^P,[]),Word):-
+
+%% lex(dt((X^P)^(X^Q)^the(X,(and(P,Q)))),the).
+lex(dt((X^P)^(X^Q)^the(X,and(P,Q))),Word):-
+		lemma(Word,dtthe).
+
+%% lex(dt((X^P)^(X^Q)^exists(X,(and(P,Q)))),some).
+lex(dt((X^P)^(X^Q)^exists(X,and(P,Q))),Word):-
+		lemma(Word,dtexists).
+
+
+
+%% lex(p((Y^on(X,Y))^Q^(X^P)^and(P,Q)),on).
+lex(p((Y^Z)^Q^(X^P)^and(P,Q)),Word):-
+		lemma(Word,p),
+		Z=.. [Word,X,Y].
+
+%% lex(iv(X^sneezed(X)),sneezed).
+lex(iv(X^Z),Word):-
+	lemma(Word,iv),
+	Z=.. [Word,X].
+
+
+%% lex(tv(X^Y^saw(X,Y)),saw).
+lex(tv(X^Y^P),Word):-
 	lemma(Word,tv),
 	P =.. [Word,X,Y].
  
-				
+%% lex(adj((X^P)^X^and(P,yellow(X))),yellow).				
+lex(adj((X^P)^X^and(P,Z)),Word):-
+	lemma(Word,adj),
+	Z =.. [Word,X].
+
 % ...
 
 % --------------------------------------------------------------------
