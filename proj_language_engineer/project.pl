@@ -150,8 +150,9 @@ lex(dt((X^P)^(X^Q)^exists(X,and(P,Q))),Word):-
 
 %% lex(p((Y^on(X,Y))^Q^(X^P)^and(P,Q)),on).
 lex(p((Y^Z)^Q^(X^P)^and(P,Q)),Word):-
-		lemma(Word,p),
-		Z=.. [Word,X,Y].
+		Lemma is Word % find lemma from word
+		lemma(Lemma,p),
+		Z=.. [Lemma,X,Y].
 
 %% lex(iv(X^sneezed(X)),sneezed).
 lex(iv(X^Z),Word):-
@@ -182,9 +183,19 @@ lex(adj((X^P)^X^and(P,Z)),Word):-
 % rule(+LHS,+ListOfRHS)
 % --------------------------------------------------------------------
 
+rule(s(Y),[np(X^Y),vp(X)]).                
+
+rule(vp(X^W),[tv(X^Y),np(Y^W)]).
+rule(vp(X),[iv(X)]).
+
+%% rule(np(B),[dt(A^B),n(A)]).
 rule(np(Y),[dt(X^Y),n(X)]).
 rule(np(X),[pn(X)]).
 
+rule(n(Y),[adj(X^Y),n(X)]).
+
+rule(n(X^Z),[n(X^Y),pp((X^Y)^Z)]).
+rule(pp(Z),[p(X^Y^Z),np(X^Y)]).
 % ...
 
 
