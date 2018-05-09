@@ -53,12 +53,12 @@ lex(tv(X^Y^have(X,Y)),had).
 % Example: Shift-Reduce Parse 
 % =======================================
 
-sr_parse(Sentence):-
-        srparse([],Sentence).
+sr_parse(Sentence, X):-
+        srparse([],Sentence, X).
  
-srparse([X],[]):- 
-  numbervars(X,0,_),
-  write(X).
+srparse([X],[],X).%:- 
+  %% numbervars(X,0,_).
+  %% write(X).
 
 srparse([Y,X|MoreStack],Words):-
        rule(LHS,[X,Y]),

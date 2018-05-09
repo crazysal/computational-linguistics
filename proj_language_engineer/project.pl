@@ -54,22 +54,22 @@ process([bye|_]):-
 % 3. Obtain FOL representation for input sentence
 % ===========================================================
 
-parse(Input, sr_parse(Input)).
+parse(Input, SemanticRepresentation):-
 % ...
 	%% print(Input),
-	%% SemanticRepresentation = .
+	sr_parse(Input,SemanticRepresentation).
 
 
 % =======================================
 % Example: Shift-Reduce Parse 
 % =======================================
 
-sr_parse(Sentence):-
-        srparse([],Sentence).
+sr_parse(Sentence, SemanticRepresentation):-
+        srparse([],Sentence, SemanticRepresentation).
  
-srparse([X],[]):- 
-  numbervars(X,0,_),
-  write(X).
+srparse([X],[], X).
+  %% numbervars(X,0,_),
+  %% write(X).
 
 srparse([Y,X|MoreStack],Words):-
        rule(LHS,[X,Y]),
@@ -113,6 +113,15 @@ lemma(weapon,n).
 lemma(passenger,n).
 lemma(man,n).
 lemma(ham,n).
+lemma(container,n).
+lemma(shelf,n).
+lemma(sandwich,n).
+lemma(meat,n).
+lemma(milk,n).
+lemma(table,n).
+lemma(bowl,n).
+lemma(egg,n).
+lemma(freezer,n).
 %% 
 lemma(tom,pn).
 lemma(mia,pn).
@@ -121,27 +130,40 @@ lemma(rui,pn).
 lemma(sal,pn).
 %% 
 lemma(red,adj).
+lemma(green,adj).
 lemma(yellow,adj).
+lemma(white,adj).
+lemma(black,adj).
 lemma(old,adj).
 lemma(illegal,adj).
 lemma(big,adj).
 lemma(blue,adj).
+lemma(middle,adj).
+lemma(empty,adj).
 %% 
 lemma(is,be).
 lemma(was,be).
 %% 
 lemma(eat,tv).
+lemma(drink,tv).
 lemma(saw,tv).
 lemma(had,tv).
 lemma(contains,tv).
+lemma(belong,tv).
 %% 
 lemma(in,p).
 lemma(under,p).
-%% 
 lemma(on,p).   
+%% 
 lemma(to,vacp).
 %% 
 lemma(sneeze,iv).
+
+%% 
+lemma(do,aux).
+lemma(does,aux).
+
+
 
 
  
@@ -200,6 +222,8 @@ lex(adj((X^P)^X^and(P,Z)),Word):-
 	lemma(Word,adj),
 	Z =.. [Word,X].
 
+
+
 % ...
 
 % --------------------------------------------------------------------
@@ -213,19 +237,44 @@ lex(adj((X^P)^X^and(P,Z)),Word):-
 % rule(+LHS,+ListOfRHS)
 % --------------------------------------------------------------------
 
-rule(s(Y),[np(X^Y),vp(X)]).                
+
+rule(s(Y),[np(X^Y),vp(X)]).
+%% 
+rule(s(Y,WH),[np(X^Y),vp(X,WH)]).
+rule(s(X,[WH]),[vp(X,[WH])]).                
+
 
 rule(vp(X^W),[tv(X^Y),np(Y^W)]).
-rule(vp(X),[iv(X)]).
+rule(vp(X^K,[]),[tv(X^Y,[]),np(Y^K)]).
+%% 
+rule(vp(X,WH),[iv(X,WH)]).
+rule(vp(K,[WH]),[tv(Y,[WH]),np(Y^K)]).
+
 
 rule(np(B),[dt(A^B),n(A)]).
 rule(np(Y),[dt(X^Y),n(X)]).
 rule(np(X),[pn(X)]).
 
-rule(n(Y),[adj(X^Y),n(X)]).
 
+rule(n(Y),[adj(X^Y),n(X)]).
 rule(n(X^Z),[n(X^Y),pp((X^Y)^Z)]).
+
+
 rule(pp(Z),[p(X^Y^Z),np(X^Y)]).
+
+
+
+
+%% Wh-question rules:
+
+rule(Y,[whpr(X^Y),vp(X,[])]).
+rule(ynq(Y),[aux, np(X^Y),vp(X,[])]).
+rule(Z,[whpr((X^Y)^Z), inv_s(Y,[X])]).
+rule(inv_s(Y,[WH]),[aux, np(X^Y),vp(X,[WH])]).
+
+%%  RCs combine with N
+rule(n(X^and(Y,Z)),[n(X^Y),rc(X^Z,[])]).
+rule(n(X^and(Y,Z)),[n(X^Y),rc(Z,[X])]).
 
 % ...
 
