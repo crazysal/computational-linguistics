@@ -150,7 +150,7 @@ lex(dt((X^P)^(X^Q)^exists(X,and(P,Q))),Word):-
 
 %% lex(p((Y^on(X,Y))^Q^(X^P)^and(P,Q)),on).
 lex(p((Y^Z)^Q^(X^P)^and(P,Q)),Word):-
-		Lemma is Word % find lemma from word
+		Lemma = Word, % find lemma from word
 		lemma(Lemma,p),
 		Z=.. [Lemma,X,Y].
 
