@@ -10,6 +10,7 @@
 chat:-
  repeat,
    readinput(Input),
+   %% print(readinput(Input)),	
    process(Input), 
   (Input = [bye| _] ),!.
   
@@ -53,8 +54,34 @@ process([bye|_]):-
 % 3. Obtain FOL representation for input sentence
 % ===========================================================
 
-%parse(Input, SemanticRepresentation):-
+parse(Input, sr_parse(Input)).
 % ...
+	%% print(Input),
+	%% SemanticRepresentation = .
+
+
+% =======================================
+% Example: Shift-Reduce Parse 
+% =======================================
+
+sr_parse(Sentence):-
+        srparse([],Sentence).
+ 
+srparse([X],[]):- 
+  numbervars(X,0,_),
+  write(X).
+
+srparse([Y,X|MoreStack],Words):-
+       rule(LHS,[X,Y]),
+       srparse([LHS|MoreStack],Words).
+
+srparse([X|MoreStack],Words):-
+       rule(LHS,[X]),
+       srparse([LHS|MoreStack],Words).
+
+srparse(Stack,[Word|Words]):-
+        lex(X,Word),
+        srparse([X|Stack],Words).	
 
 
 % ===========================================================
@@ -85,6 +112,7 @@ lemma(bus,n).
 lemma(weapon,n).
 lemma(passenger,n).
 lemma(man,n).
+lemma(ham,n).
 %% 
 lemma(tom,pn).
 lemma(mia,pn).
@@ -97,6 +125,7 @@ lemma(yellow,adj).
 lemma(old,adj).
 lemma(illegal,adj).
 lemma(big,adj).
+lemma(blue,adj).
 %% 
 lemma(is,be).
 lemma(was,be).
@@ -104,11 +133,12 @@ lemma(was,be).
 lemma(eat,tv).
 lemma(saw,tv).
 lemma(had,tv).
+lemma(contains,tv).
 %% 
 lemma(in,p).
 lemma(under,p).
 %% 
-lemma(on,vacp).   
+lemma(on,p).   
 lemma(to,vacp).
 %% 
 lemma(sneeze,iv).
@@ -188,7 +218,7 @@ rule(s(Y),[np(X^Y),vp(X)]).
 rule(vp(X^W),[tv(X^Y),np(Y^W)]).
 rule(vp(X),[iv(X)]).
 
-%% rule(np(B),[dt(A^B),n(A)]).
+rule(np(B),[dt(A^B),n(A)]).
 rule(np(Y),[dt(X^Y),n(X)]).
 rule(np(X),[pn(X)]).
 
@@ -196,6 +226,7 @@ rule(n(Y),[adj(X^Y),n(X)]).
 
 rule(n(X^Z),[n(X^Y),pp((X^Y)^Z)]).
 rule(pp(Z),[p(X^Y^Z),np(X^Y)]).
+
 % ...
 
 
