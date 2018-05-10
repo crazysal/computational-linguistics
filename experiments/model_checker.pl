@@ -38,8 +38,9 @@ Tables - {t1, t2, t3}
 Boxes - {b1, b2, b3, b4}
 Ham - {h1, h2}
 Freezers - {f1, f2}
+Milk - {m1}
 Sue - p1 
-Tom - p2
+Tom - p2, drinks milk
 Box 1 is blue and black, contains tables 1,2,3, and ham 1,  belongs to Tom 
 Box 2 is black, contains tables 1,2,3,  belongs to Tom 
 Box 3 is yellow, contains tables 1,2,3, and ham 2,  belongs to Sue 
@@ -48,11 +49,12 @@ Freezer 1 contains box 4
 Freezer 2 contains box 1,2,3
 
 */
-model([t1, t2, t3, b1, b2, b3, b4, h1, h2, f1, f2, p1, p2],
+model([t1, t2, t3, b1, b2, b3, b4, h1, h2, f1, f2, p1, p2, m1],
   [
     [table,[t1, t2, t3]],
     [box,[b1, b2, b3, b4]],    
     [ham,[h1, h2]],    
+    [milk,[m1]],    
     [freezer,[f1, f2]],    
     [sue,[p1]],    
     [tom,[p2]],    
@@ -72,6 +74,10 @@ model([t1, t2, t3, b1, b2, b3, b4, h1, h2, f1, f2, p1, p2],
                 [b1, p2],[b2,p2],
                 [b3, p1],[b4,p1]
               ]
+    ] ,
+    [drink, [
+               [p2, m1]
+            ]
     ]  
 
   ]).
@@ -132,11 +138,19 @@ sat(G1,if(X,Formula),G3):-
 % Definite quantifier (semantic rather than pragmatic account)
 % ==================================================
 
- sat(G1,the(X,and(A,B)),G3):-
+sat(G1,the(X,and(A,B)),G3):-
    sat(G1,exists(X,and(A,B)),G3),
    i(X,G3,Value), 
    \+ ( ( sat(G1,exists(X,A),G2), i(X,G2,Value2), \+(Value = Value2)) ).
 
+
+sat(G1,the(X,Formula),G3):-
+   sat(G1,exists(X,Formula),G3).
+
+/*,
+   i(X,G3,Value), 
+   \+ ( ( sat(G1,exists(X,A),G2), i(X,G2,Value2), \+(Value = Value2)) ).
+*/
 
 
 
