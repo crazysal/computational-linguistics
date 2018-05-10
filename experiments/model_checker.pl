@@ -33,9 +33,52 @@ t(4):- sat([],exists(X,imp(person(X),not(exists(Y,and(box(Y),contain(Y,X)))))),G
 
 model([a,b,c,r],
            [ [cat, [a,b]], [dog,[c]], [die, [c,r,d]], [chase, [ [a,b], [c,a], [c,b] ]] ]).
+/*
+Tables - {t1, t2, t3}
+Boxes - {b1, b2, b3, b4}
+Ham - {h1, h2}
+Freezers - {f1, f2}
+Sue - p1 
+Tom - p2
+Box 1 is blue and black, contains tables 1,2,3, and ham 1,  belongs to Tom 
+Box 2 is black, contains tables 1,2,3,  belongs to Tom 
+Box 3 is yellow, contains tables 1,2,3, and ham 2,  belongs to Sue 
+Box 4 is white,  belongs to Sue 
+Freezer 1 contains box 4
+Freezer 2 contains box 1,2,3
 
+*/
+model([t1, t2, t3, b1, b2, b3, b4, h1, h2, f1, f2, p1, p2],
+  [
+    [table,[t1, t2, t3]],
+    [box,[b1, b2, b3, b4]],    
+    [ham,[h1, h2]],    
+    [freezer,[f1, f2]],    
+    [sue,[p1]],    
+    [tom,[p2]],    
+    [blue, [b1]],
+    [black, [b1, b2]],  
+    [yellow, [b3]],
+    [white, [b4]],
+    [contain, [
+                [b1, t1], [b1,t2], [b1,t3], [b1, h1],
+                [b2, t1], [b2,t2], [b2,t3], 
+                [b3, t1], [b3,t2], [b3,t3], [b3, h2],
+                [f1, b4], 
+                [f2, b1], [f2, b2], [f2, b3]
+              ]
+    ],
+    [belong, [
+                [b1, p2],[b2,p2],
+                [b3, p1],[b4,p1]
+              ]
+    ]  
 
+  ]).
 
+    %% [contain, [b2, t1]],  
+    %% [contain, [b3, t1]]  
+%% s(forall(_G387,if(table(_G387),exists(_G395,and(and(box(_G395),black(_G395)),contain(_G395,_G387))))))
 % ==================================================
 % Function i
 % Determines the value of a variable/constant in an assignment G
@@ -76,6 +119,11 @@ extend(G,X,[ [X,Val] | G]):-
 % ==================================================
 
 sat(G1,exists(X,Formula),G3):-
+   extend(G1,X,G2),
+   sat(G2,Formula,G3).
+
+
+sat(G1,if(X,Formula),G3):-
    extend(G1,X,G2),
    sat(G2,Formula,G3).
 

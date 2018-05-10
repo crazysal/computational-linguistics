@@ -56,18 +56,18 @@ lex(tv(X^Y^have(X,Y)),had).
 sr_parse(Sentence, X):-
         srparse([],Sentence, X).
  
-srparse([X],[],X).%:- 
+srparse([X],[],X).
   %% numbervars(X,0,_).
   %% write(X).
 
-srparse([Y,X|MoreStack],Words):-
+srparse([Y,X|MoreStack],Words,Z):-
        rule(LHS,[X,Y]),
-       srparse([LHS|MoreStack],Words).
+       srparse([LHS|MoreStack],Words,Z).
 
-srparse([X|MoreStack],Words):-
+srparse([X|MoreStack],Words,Z):-
        rule(LHS,[X]),
-       srparse([LHS|MoreStack],Words).
+       srparse([LHS|MoreStack],Words,Z).
 
-srparse(Stack,[Word|Words]):-
+srparse(Stack,[Word|Words],Z):-
         lex(X,Word),
-        srparse([X|Stack],Words).
+        srparse([X|Stack],Words, Z).

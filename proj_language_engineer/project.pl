@@ -67,21 +67,21 @@ parse(Input, SemanticRepresentation):-
 sr_parse(Sentence, SemanticRepresentation):-
         srparse([],Sentence, SemanticRepresentation).
  
-srparse([X],[], X).
-  %% numbervars(X,0,_),
+srparse([X],[],X).
+  %% numbervars(X,0,_).
   %% write(X).
 
-srparse([Y,X|MoreStack],Words):-
+srparse([Y,X|MoreStack],Words,Z):-
        rule(LHS,[X,Y]),
-       srparse([LHS|MoreStack],Words).
+       srparse([LHS|MoreStack],Words,Z).
 
-srparse([X|MoreStack],Words):-
+srparse([X|MoreStack],Words,Z):-
        rule(LHS,[X]),
-       srparse([LHS|MoreStack],Words).
+       srparse([LHS|MoreStack],Words,Z).
 
-srparse(Stack,[Word|Words]):-
+srparse(Stack,[Word|Words],Z):-
         lex(X,Word),
-        srparse([X|Stack],Words).	
+        srparse([X|Stack],Words, Z).
 
 
 % ===========================================================
@@ -107,6 +107,8 @@ lemma(every,dtforall).
 %% 
 lemma(the,dtthe).
 %% 
+lemma(no,dtneg).
+%% 
 lemma(box,n).
 lemma(bus,n).
 lemma(weapon,n).
@@ -121,6 +123,7 @@ lemma(milk,n).
 lemma(table,n).
 lemma(bowl,n).
 lemma(egg,n).
+lemma(almond,n).
 lemma(freezer,n).
 %% 
 lemma(tom,pn).
@@ -140,6 +143,7 @@ lemma(big,adj).
 lemma(blue,adj).
 lemma(middle,adj).
 lemma(empty,adj).
+lemma(almond,adj).
 %% 
 lemma(is,be).
 lemma(was,be).
@@ -148,13 +152,13 @@ lemma(eat,tv).
 lemma(drink,tv).
 lemma(saw,tv).
 lemma(had,tv).
-lemma(contains,tv).
+lemma(contain,tv).
 lemma(belong,tv).
 %% 
 lemma(in,p).
 lemma(under,p).
-lemma(on,p).   
 %% 
+lemma(on,vacp).   
 lemma(to,vacp).
 %% 
 lemma(sneeze,iv).
@@ -162,7 +166,34 @@ lemma(sneeze,iv).
 %% 
 lemma(do,aux).
 lemma(does,aux).
+lemma(did,aux).
 
+%% 
+lemma(that,rel).
+lemma(there,rel).
+lemma(where,rel).
+%% 
+lemma(put,dtv).
+lemma(kept,dtv).
+lemma(removed,dtv).
+lemma(placed,dtv).
+lemma(attach,dtv).
+%% 
+lemma(who,whpr).
+lemma(what,whpr).
+
+%% 
+lemma(one,num).
+lemma(two,num).
+lemma(three,num).
+lemma(four,num).
+lemma(five,num).
+lemma(six,num).
+lemma(seven,num).
+lemma(eight,num).
+lemma(nine,num).
+lemma(nine,num).
+lemma(ten,num).
 
 
 
@@ -175,54 +206,89 @@ lemma(does,aux).
 
 %% lex(n(X^bus(X)),bus).
 lex(n(X^P),Lemma):-
-	lemma(Lemma,n),
-	P=.. [Lemma,X].
+	atom_concat(L, _, Lemma),
+	lemma(L,n),
+	P=.. [L,X],
+	write('from Lex n\n').
 
 
 %% lex(pn((sue^X)^X),sue).
 lex(pn((Lemma^X)^X), Lemma):-
-	lemma(Lemma,pn).
+	lemma(Lemma,pn),
+	write('from Lex pn \n').
 
 
 
 %% lex(dt((X^P)^(X^Q)^forall(X,(imp(P,Q)))),each).
 lex(dt((X^P)^(X^Q)^forall(X,imp(P,Q))),Word):-
-		lemma(Word,dtforall).
+		lemma(Word,dtforall),
+		write('from Lex dtforall \n').
  
 
 %% lex(dt((X^P)^(X^Q)^the(X,(and(P,Q)))),the).
 lex(dt((X^P)^(X^Q)^the(X,and(P,Q))),Word):-
-		lemma(Word,dtthe).
+		lemma(Word,dtthe),
+		write('from Lex dtthe \n').
 
 %% lex(dt((X^P)^(X^Q)^exists(X,(and(P,Q)))),some).
 lex(dt((X^P)^(X^Q)^exists(X,and(P,Q))),Word):-
-		lemma(Word,dtexists).
-
+		lemma(Word,dtexists),
+		write('from Lex dtexist \n').
 
 
 %% lex(p((Y^on(X,Y))^Q^(X^P)^and(P,Q)),on).
 lex(p((Y^Z)^Q^(X^P)^and(P,Q)),Word):-
-		Lemma = Word, % find lemma from word
+		atom_concat(Lemma, _, Word),
 		lemma(Lemma,p),
-		Z=.. [Lemma,X,Y].
+		Z=.. [Lemma,X,Y],
+		write('from Lex p \n').
 
 %% lex(iv(X^sneezed(X)),sneezed).
-lex(iv(X^Z),Word):-
+lex(iv(X^Z),Lemma):-
+	atom_concat(Word, _, Lemma),
 	lemma(Word,iv),
-	Z=.. [Word,X].
+	Z=.. [Word,X],
+	write('from Lex iv \n').
+
+
+%% BE : returning same for now				
+lex(be,Word):-
+	lemma(Word,be),
+	write('from Lex be1 \n').
+
+lex(be(X^Z),Word):-
+	lemma(Word,be),
+	Z=.. [Word,X],
+	write('from Lex be2 \n').
 
 
 %% lex(tv(X^Y^saw(X,Y)),saw).
-lex(tv(X^Y^P),Word):-
-	lemma(Word,tv),
-	P =.. [Word,X,Y].
+lex(tv(X^Y^P,[]),Word):-
+	atom_concat(Lemma, _, Word),		
+	lemma(Lemma,tv),
+	P =.. [Lemma,X,Y].
+
+%% lex(dtv(X^Y^saw(X,Y)),saw).
+lex(dtv(X^Y^Z^P,[]),Word):-
+	atom_concat(Lemma, _, Word),
+	lemma(Lemma,tv),
+	P =.. [Lemma,X,Y,Z].
  
 %% lex(adj((X^P)^X^and(P,yellow(X))),yellow).				
 lex(adj((X^P)^X^and(P,Z)),Word):-
 	lemma(Word,adj),
 	Z =.. [Word,X].
 
+%% AUX : returning same for now				
+lex(aux,Word):-
+	lemma(Word,aux).
 
+%% WHPR; λP.?x (person(x),P(x)))-> who
+%% WHPR; λP.?x (thing(x),P(x)))-> what  
+%%  need to improve thsi
+lex(whpr(X^Y),Word):-
+	lemma(Word,whpr),
+	Y=.. [Word, X].	
 
 % ...
 
@@ -254,6 +320,7 @@ rule(vp(K,[WH]),[tv(Y,[WH]),np(Y^K)]).
 rule(np(B),[dt(A^B),n(A)]).
 rule(np(Y),[dt(X^Y),n(X)]).
 rule(np(X),[pn(X)]).
+rule(np((X^Y)^exists(X,and(P,Y))),[n(X^P)]).
 
 
 rule(n(Y),[adj(X^Y),n(X)]).
@@ -261,6 +328,8 @@ rule(n(X^Z),[n(X^Y),pp((X^Y)^Z)]).
 
 
 rule(pp(Z),[p(X^Y^Z),np(X^Y)]).
+
+%% rule(dtv(Z),[np(X),pp(Y)]).
 
 
 
@@ -275,6 +344,8 @@ rule(inv_s(Y,[WH]),[aux, np(X^Y),vp(X,[WH])]).
 %%  RCs combine with N
 rule(n(X^and(Y,Z)),[n(X^Y),rc(X^Z,[])]).
 rule(n(X^and(Y,Z)),[n(X^Y),rc(Z,[X])]).
+
+
 
 % ...
 
