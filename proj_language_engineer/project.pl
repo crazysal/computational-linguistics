@@ -147,6 +147,7 @@ lemma(almond,adj).
 %% 
 lemma(is,be).
 lemma(was,be).
+lemma(are,be).
 %% 
 lemma(eat,tv).
 lemma(drink,tv).

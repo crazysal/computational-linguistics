@@ -55,7 +55,7 @@ model([t1, t2, t3, b1, b2, b3, b4, h1, h2, f1, f2, p1, p2, m1],
     [box,[b1, b2, b3, b4]],    
     [ham,[h1, h2]],    
     [milk,[m1]],    
-    [freezer,[f1, f2]],    
+    [freezer,[f1]],    
     [sue,[p1]],    
     [tom,[p2]],    
     [blue, [b1]],
@@ -66,8 +66,9 @@ model([t1, t2, t3, b1, b2, b3, b4, h1, h2, f1, f2, p1, p2, m1],
                 [b1, t1], [b1,t2], [b1,t3], [b1, h1],
                 [b2, t1], [b2,t2], [b2,t3], 
                 [b3, t1], [b3,t2], [b3,t3], [b3, h2],
-                [f1, b4], 
-                [f2, b1], [f2, b2], [f2, b3]
+                [f1, b4]
+                /*, 
+                [f2, b1], [f2, b2], [f2, b3]*/
               ]
     ],
     [belong, [
@@ -144,8 +145,18 @@ sat(G1,the(X,and(A,B)),G3):-
    \+ ( ( sat(G1,exists(X,A),G2), i(X,G2,Value2), \+(Value = Value2)) ).
 
 
-sat(G1,the(X,Formula),G3):-
-   sat(G1,exists(X,Formula),G3).
+
+%% 
+/*sat(G1,the(X,A),G3):-
+   sat(G1,exists(X,A),G3),
+   i(X,G3,Value), 
+   \+ ( ( sat(G1,exists(X,A),G2), i(X,G2,Value2), \+(Value = Value2)) ).
+*/
+%% 
+
+
+%% sat(G1,the(X,Formula),G3):-
+%%    sat(G1,exists(X,Formula),G3).
 
 /*,
    i(X,G3,Value), 
