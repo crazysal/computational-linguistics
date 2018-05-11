@@ -170,7 +170,7 @@ lemma(does,aux).
 lemma(did,aux).
 
 %% 
-lemma(that,rel).
+lemma(that ,rel).
 lemma(there,rel).
 lemma(where,rel).
 %% 
@@ -330,7 +330,8 @@ rule(n(X^Z),[n(X^Y),pp((X^Y)^Z)]).
 
 rule(pp(Z),[p(X^Y^Z),np(X^Y)]).
 
-%% rule(dtv(Z),[np(X),pp(Y)]).
+
+rule(vp(X^A,[]),[dtv(X^Y^Z^W,[]),np((Y^B)^A),pp((Z^W)^B)]).
 
 
 
@@ -349,6 +350,7 @@ rule(n(X^and(Y,Z)),[n(X^Y),rc(Z,[X])]).
 
 
 % ...
+rule(be).
 
 
 % ===========================================================

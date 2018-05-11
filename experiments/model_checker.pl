@@ -39,6 +39,7 @@ Boxes - {b1, b2, b3, b4}
 Ham - {h1, h2}
 Freezers - {f1, f2}
 Milk - {m1}
+Egg - {e1}
 Sue - p1 
 Tom - p2, drinks milk
 Box 1 is blue and black, contains tables 1,2,3, and ham 1,  belongs to Tom 
@@ -49,13 +50,14 @@ Freezer 1 contains box 4
 Freezer 2 contains box 1,2,3
 
 */
-model([t1, t2, t3, b1, b2, b3, b4, h1, h2, f1, f2, p1, p2, m1],
+model([t1, t2, t3, b1, b2, b3, b4, h1, h2, f1, p1, p2, m1, e1],
   [
     [table,[t1, t2, t3]],
     [box,[b1, b2, b3, b4]],    
     [ham,[h1, h2]],    
     [milk,[m1]],    
-    [freezer,[f1]],    
+    [freezer,[f1]],
+    [egg, [e1]]    
     [sue,[p1]],    
     [tom,[p2]],    
     [blue, [b1]],
@@ -66,9 +68,7 @@ model([t1, t2, t3, b1, b2, b3, b4, h1, h2, f1, f2, p1, p2, m1],
                 [b1, t1], [b1,t2], [b1,t3], [b1, h1],
                 [b2, t1], [b2,t2], [b2,t3], 
                 [b3, t1], [b3,t2], [b3,t3], [b3, h2],
-                [f1, b4]
-                /*, 
-                [f2, b1], [f2, b2], [f2, b3]*/
+                [f1, b4] 
               ]
     ],
     [belong, [
