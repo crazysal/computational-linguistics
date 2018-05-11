@@ -347,9 +347,9 @@ rule(inv_s(Y,[WH]),[aux, np(X^Y),vp(X,[WH])]).
 rule(n(X^and(Y,Z)),[n(X^Y),rc(X^Z,[])]).
 rule(n(X^and(Y,Z)),[n(X^Y),rc(Z,[X])]).
 
-
-rule(adv)
-% ...
+%% 
+rule(adv).
+%% % ...
 rule(be).
 
 
