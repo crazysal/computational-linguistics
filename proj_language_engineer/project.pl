@@ -348,7 +348,7 @@ rule(n(X^and(Y,Z)),[n(X^Y),rc(X^Z,[])]).
 rule(n(X^and(Y,Z)),[n(X^Y),rc(Z,[X])]).
 
 
-
+rule(adv)
 % ...
 rule(be).
 
